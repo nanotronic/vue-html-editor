@@ -85,7 +85,7 @@ module.exports = {
       maxHeight: this.maxHeight,
       toolbar: this.toolbar,
       onInit: function() {
-        me.control.code(me.model);
+        me.control.summernote('code', me.model);
       }
     }).on("summernote.change", function() {
       // Note that we do not use the "onChange" options of the summernote
@@ -94,7 +94,7 @@ module.exports = {
       // handler after changing the code of summernote via ".code()" function.
       if (! me.isChanging) {
         me.isChanging = true;
-        var code = me.control.code();
+        var code =  me.control.summernote('code');
         me.model = (code === null || code.length === 0 ? null : code);
         me.$nextTick(function () {
           me.isChanging = false;
@@ -102,6 +102,7 @@ module.exports = {
       }
     });
   },
+
   watch: {
     "model": function (val, oldVal) {
       if (! this.isChanging) {
@@ -109,7 +110,7 @@ module.exports = {
         //  note that setting code value does not automatically trigger
         //  the "summernote.change" event
         var code = (val === null ? "" : val);
-        this.control.code(code).trigger("summernote.change");
+        this.control.summernote('code', code);
         this.isChanging = false;
       }
     }
