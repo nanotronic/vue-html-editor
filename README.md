@@ -39,7 +39,7 @@ The HTML snippets are as follows:
 
 ```html
 <div class="container" id="app">
-  <vue-html-editor model="{{@ text}}"></vue-html-editor>
+  <vue-html-editor :model.sync="text"></vue-html-editor>
   <div style="margin-top:40px">
     <div> The HTML contents are as follows:</div>
     <hr>
@@ -52,11 +52,12 @@ The Javascript snippets are as follows:
 
 ```javascript
 var Vue = require("vue");
+var VueHtmlEditor require("vue-html-editor");
 
 var vm = new Vue({
   el: "#app",
   components: {
-    "vue-html-editor": require("vue-html-editor")
+    VueHtmlEditor: VueHtmlEditor
   },
   data: {
     text: "Hello World!"
