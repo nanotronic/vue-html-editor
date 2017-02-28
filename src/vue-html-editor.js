@@ -124,7 +124,7 @@ module.exports = {
   },
 
   methods: {
-    cleanPastedHTML (input) {
+    cleanPastedHTML: function (input) {
       // 1. remove line breaks / Mso classes
       var stringStripper = /(\n|\r| class=(")?Mso[a-zA-Z]+(")?)/g
       var output = input.replace(stringStripper, ' ')
