@@ -130,7 +130,7 @@ module.exports = {
       var output = input.replace(stringStripper, ' ')
       // 2. strip Word generated HTML comments
       var commentSripper = new RegExp('<!--(.*?)-->', 'g')
-      var output = output.replace(commentSripper, '')
+      output = output.replace(commentSripper, '')
       var tagStripper = new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>', 'gi')
       // 3. remove tags leave content if any
       output = output.replace(tagStripper, '')
