@@ -33,7 +33,7 @@ module.exports = {
     language: {
       type: String,
       required: false,
-      default: "en-US"
+      default: 'en-US'
     },
     height: {
       type: Number,
@@ -53,106 +53,101 @@ module.exports = {
     toolbar: {
       type: Array,
       required: false,
-      default: function() {
+      default: function () {
         return [
-          ["font", ["bold", "italic", "underline", "clear"]],
-          ["fontsize", ["fontsize"]],
-          ["para", ["ul", "ol", "paragraph"]],
-          ["color", ["color"]],
-          ["insert", ["link", "picture", "hr"]]
-        ];
+          ['font', ['bold', 'italic', 'underline', 'clear']],
+          ['fontsize', ['fontsize']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['color', ['color']],
+          ['insert', ['link', 'picture', 'hr']]
+        ]
       }
     }
   },
-  beforeCompile: function() {
-    this.isChanging = false;
-    this.control = null;
+  beforeCompile: function () {
+    this.isChanging = false
+    this.control = null
   },
-  ready: function() {
+  ready: function () {
     //  initialize the summernote
     if (this.minHeight > this.height) {
-      this.minHeight = this.height;
+      this.minHeight = this.height
     }
     if (this.maxHeight < this.height) {
-      this.maxHeight = this.height;
+      this.maxHeight = this.height
     }
-    var me = this;
-    this.control = $(this.$el);
+    var me = this
+    this.control = $(this.$el)
     this.control.summernote({
       lang: this.language,
       height: this.height,
       minHeight: this.minHeight,
       maxHeight: this.maxHeight,
       toolbar: this.toolbar,
-      onInit: function() {
-        me.control.summernote('code', me.model);
+      onInit: function () {
+        me.control.summernote('code', me.model)
       }
-    }).on("summernote.change", function() {
+    }).on('summernote.change', function () {
       // Note that we do not use the "onChange" options of the summernote
       // constructor. Instead, we use a event handler of "summernote.change"
       // event because that I don't know how to trigger the "onChange" event
       // handler after changing the code of summernote via ".code()" function.
-      if (! me.isChanging) {
-        me.isChanging = true;
-        var code =  me.control.summernote('code');
-        me.model = (code === null || code.length === 0 ? null : code);
+      if (!me.isChanging) {
+        me.isChanging = true
+        var code = me.control.summernote('code')
+        me.model = (code === null || code.length === 0 ? null : code)
         me.$nextTick(function () {
-          me.isChanging = false;
-        });
+          me.isChanging = false
+        })
       }
-    }).on('summernote.paste', function(e) {
-        var thisNote = me.control.summernote;
-        var updatePastedText = function(someNote){
-          var original = someNote.code();
-          var cleaned = me.cleanPastedHTML(original); //this is where to call whatever clean function you want. I have mine in a different file, called CleanPastedHTML.
-          someNote.code('').html(cleaned); //this sets the displayed content editor to the cleaned pasted code.
-        };
-        setTimeout(function () {
-          //this kinda sucks, but if you don't do a setTimeout, 
-          //the function is called before the text is really pasted.
-          updatePastedText(thisNote);
-        }, 10);
-    });
+    }).on('summernote.paste', function (e) {
+      var updatePastedText = function (someNote) {
+        var original = me.control.summernote('code')
+        var cleaned = me.cleanPastedHTML(original)
+        me.control.summernote('code', cleaned)
+      }
+      setTimeout(updatePastedText, 10)
+    })
   },
 
   watch: {
-    "model": function (val, oldVal) {
-      if (! this.isChanging) {
-        this.isChanging = true;
+    'model': function (val, oldVal) {
+      if (!this.isChanging) {
+        this.isChanging = true
         //  note that setting code value does not automatically trigger
         //  the "summernote.change" event
-        var code = (val === null ? "" : val);
-        this.control.summernote('code', code);
-        this.isChanging = false;
+        var code = (val === null ? '' : val)
+        this.control.summernote('code', code)
+        this.isChanging = false
       }
     }
   },
-  
-  methods: {
-    cleanPastedHTML(input) {
-      // 1. remove line breaks / Mso classes
-      var stringStripper = /(\n|\r| class=(")?Mso[a-zA-Z]+(")?)/g;
-      var output = input.replace(stringStripper, ' ');
-      // 2. strip Word generated HTML comments
-      var commentSripper = new RegExp('<!--(.*?)-->','g');
-      var output = output.replace(commentSripper, '');
-      var tagStripper = new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>','gi');
-      // 3. remove tags leave content if any
-      output = output.replace(tagStripper, '');
-      // 4. Remove everything in between and including tags '<style(.)style(.)>'
-      var badTags = ['style', 'script','applet','embed','noframes','noscript'];
 
-      for (var i=0; i< badTags.length; i++) {
-        tagStripper = new RegExp('<'+badTags[i]+'.*?'+badTags[i]+'(.*?)>', 'gi');
-        output = output.replace(tagStripper, '');
+  methods: {
+    cleanPastedHTML (input) {
+      // 1. remove line breaks / Mso classes
+      var stringStripper = /(\n|\r| class=(")?Mso[a-zA-Z]+(")?)/g
+      var output = input.replace(stringStripper, ' ')
+      // 2. strip Word generated HTML comments
+      var commentSripper = new RegExp('<!--(.*?)-->', 'g')
+      var output = output.replace(commentSripper, '')
+      var tagStripper = new RegExp('<(/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>', 'gi')
+      // 3. remove tags leave content if any
+      output = output.replace(tagStripper, '')
+      // 4. Remove everything in between and including tags '<style(.)style(.)>'
+      var badTags = ['style', 'script', 'applet', 'embed', 'noframes', 'noscript']
+
+      for (var i = 0; i < badTags.length; i++) {
+        tagStripper = new RegExp('<' + badTags[i] + '.*?' + badTags[i] + '(.*?)>', 'gi')
+        output = output.replace(tagStripper, '')
       }
       // 5. remove attributes ' style="..."'
-      var badAttributes = ['style', 'start'];
-      for (var i=0; i< badAttributes.length; i++) {
-        var attributeStripper = new RegExp(' ' + badAttributes[i] + '="(.*?)"','gi');
-        output = output.replace(attributeStripper, '');
+      var badAttributes = ['style', 'start']
+      for (var i = 0; i < badAttributes.length; i++) {
+        var attributeStripper = new RegExp(' ' + badAttributes[i] + '="(.*?)"', 'gi')
+        output = output.replace(attributeStripper, '')
       }
-      return output;
+      return output
     }
   }
-};
+}
