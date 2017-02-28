@@ -104,7 +104,7 @@ module.exports = {
         var thisNote = me.control.summernote;
         var updatePastedText = function(someNote){
           var original = someNote.code();
-          var cleaned = CleanPastedHTML(original); //this is where to call whatever clean function you want. I have mine in a different file, called CleanPastedHTML.
+          var cleaned = me.cleanPastedHTML(original); //this is where to call whatever clean function you want. I have mine in a different file, called CleanPastedHTML.
           someNote.code('').html(cleaned); //this sets the displayed content editor to the cleaned pasted code.
         };
         setTimeout(function () {
